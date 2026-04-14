@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
-import '../providers/auth_provider.dart';
+import 'package:submission_pertama/presentation/providers/auth_provider.dart';
 import '../providers/story_list_provider.dart';
 import '../../data/repositories/story_repository.dart';
 import '../../config/flavor_config.dart';
 
 class AddStoryPage extends StatefulWidget {
-  const AddStoryPage({Key? key}) : super(key: key);
+  const AddStoryPage({super.key});
 
   @override
   State<AddStoryPage> createState() => _AddStoryPageState();
@@ -73,7 +73,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
               leading: const Icon(Icons.camera_alt),
               title: const Text('Camera'),
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 _pickImage(ImageSource.camera);
               },
             ),
@@ -81,7 +81,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
               leading: const Icon(Icons.photo_library),
               title: const Text('Gallery'),
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 _pickImage(ImageSource.gallery);
               },
             ),
