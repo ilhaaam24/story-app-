@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
+import '../providers/story_list_provider.dart';
 import '../../data/repositories/story_repository.dart';
 import '../../config/flavor_config.dart';
 
@@ -21,7 +22,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
   File? _imageFile;
   bool _isLoading = false;
-  
+
   // Location
   double? _selectedLat;
   double? _selectedLng;
@@ -43,16 +44,16 @@ class _AddStoryPageState extends State<AddStoryPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to pick image: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to pick image: $e')));
       }
     }
   }
 
   Future<void> _pickLocation() async {
     final result = await context.push('/pick-location');
-    
+
     if (result != null && result is Map) {
       setState(() {
         _selectedLat = result['lat'];
@@ -92,16 +93,16 @@ class _AddStoryPageState extends State<AddStoryPage> {
 
   Future<void> _uploadStory() async {
     if (_imageFile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select an image')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please select an image')));
       return;
     }
 
     if (_descriptionController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter description')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter description')));
       return;
     }
 
@@ -126,16 +127,19 @@ class _AddStoryPageState extends State<AddStoryPage> {
       );
 
       if (mounted) {
+        // Trigger refresh on the global provider before popping
+        context.read<StoryListProvider>().refresh();
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Story uploaded successfully')),
         );
-        context.pop(true); // Return true to trigger refresh
+        context.pop(true); // Return true to trigger refresh (kept for fallback)
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to upload: $e')));
       }
     } finally {
       if (mounted) {
@@ -151,9 +155,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
     final canAddLocation = FlavorConfig.instance.canAddLocation;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Story'),
-      ),
+      appBar: AppBar(title: const Text('Add New Story')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -174,10 +176,7 @@ class _AddStoryPageState extends State<AddStoryPage> {
                       child: _imageFile != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.file(
-                                _imageFile!,
-                                fit: BoxFit.cover,
-                              ),
+                              child: Image.file(_imageFile!, fit: BoxFit.cover),
                             )
                           : Column(
                               mainAxisAlignment: MainAxisAlignment.center,

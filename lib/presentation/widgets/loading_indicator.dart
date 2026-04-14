@@ -33,7 +33,7 @@ class LoadingOverlay extends StatelessWidget {
         if (isLoading)
           Container(
             color: Colors.black.withValues(alpha: 0.3),
-            child: const LoadingIndicator(),  
+            child: const LoadingIndicator(),
           ),
       ],
     );

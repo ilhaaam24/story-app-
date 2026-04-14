@@ -25,11 +25,14 @@ class StoryListProvider extends ChangeNotifier {
   bool get hasMore => _hasMore;
 
   // Load initial stories
-  Future<void> loadStories() async {
-    _state = StoryListState.loading;
+  Future<void> loadStories({bool isRefresh = false}) async {
+    if (!isRefresh) {
+      _state = StoryListState.loading;
+      _stories.clear();
+      notifyListeners();
+    }
+
     _currentPage = 1;
-    _stories.clear();
-    notifyListeners();
 
     try {
       final response = await _storyRepository.getStories(
@@ -77,6 +80,6 @@ class StoryListProvider extends ChangeNotifier {
 
   // Refresh stories
   Future<void> refresh() async {
-    await loadStories();
+    await loadStories(isRefresh: true);
   }
 }

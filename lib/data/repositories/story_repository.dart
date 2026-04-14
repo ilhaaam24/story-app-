@@ -80,7 +80,7 @@ class StoryRepository {
 
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['description'] = description;
-      
+
       if (lat != null && lon != null) {
         request.fields['lat'] = lat.toString();
         request.fields['lon'] = lon.toString();

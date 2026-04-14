@@ -33,9 +33,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
       setState(() {
         _selectedLocation = location;
       });
-      _mapController?.animateCamera(
-        CameraUpdate.newLatLngZoom(location, 15),
-      );
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(location, 15));
       await _getAddress(location);
     }
   }
@@ -134,9 +132,7 @@ class _PickLocationPageState extends State<PickLocationPage> {
                           children: [
                             const Text(
                               'Selected Location:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 4),
                             Text(_selectedAddress),
